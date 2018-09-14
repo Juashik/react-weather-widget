@@ -1,12 +1,5 @@
 import React from 'react'
 import { render } from 'react-dom'
-
-function App() {
-    return (
-        <div>
-            <h1>Привет, мир</h1>
-        </div>
-    )
-}
+import App from './components/App'
 
 render(<App />, document.getElementById('root'))
