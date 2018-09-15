@@ -6,12 +6,13 @@ const units = 'metric';
 const lang = 'ru';
 const apiUrl = `http://api.openweathermap.org/data/2.5/weather?units=${units}&lang=${lang}&appid=${apiKey}&q=`;
 
-const falloutTypes = {
-    "2": "Гроза",
-    "3": "Изморось",
-    "5": "Дождь",
-    "8": "Нет"
-}
+const falloutTypes = [];
+falloutTypes[2] = "Гроза";
+falloutTypes[3] = "Изморось";
+falloutTypes[5] = "Дождь";
+falloutTypes[6] = "Снег";
+falloutTypes[7] = "Туман";
+falloutTypes[8] = "Нет";
 
 export default class Weather extends React.Component {
     constructor(props) {
@@ -21,13 +22,6 @@ export default class Weather extends React.Component {
             error: null,
             isLoaded: false,
             data: {
-                city: "",
-                temp: "--",
-                humidity: "--",
-                description: "--",
-                clouds: "--",
-                rainfall: "--",
-                icon: null
             }
         }
 
@@ -42,7 +36,7 @@ export default class Weather extends React.Component {
             .then((res) => res.json())
             .then(
                 (result) => {
-                    let fallout = Math.floor(result.weather[0].id / 100);
+                    let fallout = falloutTypes[Math.floor(result.weather[0].id / 100)];
 
                     this.setState({
                         isLoaded: true,
@@ -52,7 +46,7 @@ export default class Weather extends React.Component {
                             humidity: result.main.humidity,
                             description: this.capitalizeFirstLetter(result.weather[0].description),
                             clouds: result.clouds.all,
-                            fallout: null,
+                            fallout: fallout,
                             icon: result.weather[0].icon
                         }
                     });
@@ -94,12 +88,12 @@ export default class Weather extends React.Component {
                 </div>
                 {picture}
                 <div className='weather-temp'>
-                    <h1>{this.state.data.temp} {String.fromCharCode(176)}C</h1>
-                    <h4>{this.state.data.description}</h4>
+                    <h1>{this.state.isLoaded ? this.state.data.temp : "--"} {String.fromCharCode(176)}C</h1>
+                    <h4>{this.state.isLoaded ? this.state.data.description : "--"}</h4>
                 </div>
                 <div className='weather-details'>
-                    <p>Влажность: {this.state.data.humidity}%</p>
-                    <p>Облачность: {this.state.data.clouds}%</p>
+                    <p>Влажность: {this.state.isLoaded ? this.state.data.humidity : "--"}%</p>
+                    <p>Облачность: {this.state.isLoaded ? this.state.data.clouds : "--"}%</p>
                     <p>Осадки: {this.state.data.fallout}</p>
                 </div>
             </div>
